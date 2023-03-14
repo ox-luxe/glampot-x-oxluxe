@@ -4,7 +4,7 @@ export class OneToOneProductMapping {
   constructor() {
   }
 
-  static async save(oxluxeProductId: number, glampotProductId: string) {
+  static async save(glampotProductId: number, oxluxeProductId: string) {
     try {
         let sql =  `INSERT INTO 
         \`glampot_integration\`.\`one_to_one_product_mapping\` 
@@ -21,7 +21,7 @@ export class OneToOneProductMapping {
 
   static async find(productId: string) {
     try {
-      let sql = `select * from one_to_one_product_mapping where oxluxe_product_id=${productId};`;
+      let sql = `select * from one_to_one_product_mapping where glampot_product_id=${productId};`;
       let result = await db.execute(sql);
       // @ts-ignore
       return result[0].length > 0 ? result[0][0] : undefined;

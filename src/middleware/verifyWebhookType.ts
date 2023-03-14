@@ -10,27 +10,30 @@ export async function verifyWebhookType(
   try {
     // res.locals.productWebhook came from previous middleware: extractProductWebhookForFurtherProcessing
     let productWebhook = res.locals.productWebhook;
-  
-    const oneToOneProductMapping = await OneToOneProductMapping.find(productWebhook.id);
-    const hasGlampotTag = ShopifyStore.doesProductWebhookContainTag(productWebhook, "Glampot");
-    
-    console.log(oneToOneProductMapping);
-    console.log(hasGlampotTag);
 
-    if (oneToOneProductMapping && hasGlampotTag) {
+    const oneToOneProductMapping = await OneToOneProductMapping.find(productWebhook.id);
+    const hasOxluxeTag = ShopifyStore.doesProductWebhookContainTag(
+      productWebhook,
+      "Oxluxe"
+    );
+
+    console.log(oneToOneProductMapping);
+    console.log(hasOxluxeTag);
+
+    if (oneToOneProductMapping && hasOxluxeTag) {
       // these variables are used in the updateProduct controller
       res.locals.productWebhookType = "update";
       res.locals.oneToOneProductMapping = oneToOneProductMapping;
     }
-    if (!oneToOneProductMapping && hasGlampotTag) {
+    if (!oneToOneProductMapping && hasOxluxeTag) {
       res.locals.productWebhookType = "create";
     }
-    if (oneToOneProductMapping && !hasGlampotTag) {
+    if (oneToOneProductMapping && !hasOxluxeTag) {
       // these variables are used in the deleteProduct controller
       res.locals.productWebhookType = "delete";
       res.locals.oneToOneProductMapping = oneToOneProductMapping;
     }
-    if (!oneToOneProductMapping && !hasGlampotTag) {
+    if (!oneToOneProductMapping && !hasOxluxeTag) {
       res.status(204).send();
     }
 

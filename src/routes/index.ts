@@ -7,7 +7,7 @@ function routes() {
     res.send({ message: "Server Active!" });
   });
   
-  router.use("/glampot/products", productRoute());
+  router.use("/oxluxe/products", productRoute());
   // add additional routes here
   return router;
 }

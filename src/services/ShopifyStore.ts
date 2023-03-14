@@ -1,22 +1,22 @@
 import { ProductCreateWebhook } from "../interface/productCreateWebhook.interface";
 import Shopify from "@shopify/shopify-api";
-import fetch from 'node-fetch';
+import fetch from "node-fetch";
 import { OneToOneProductMapping } from "../models/OneToOneProductMapping";
 
 interface ProductData extends ProductCreateWebhook {
   productCost: string;
-  correspondingGlampotProductId?: string;
+  correspondingOxluxeProductId?: string;
 }
 
-async function getConversionRatesForSGD(): Promise<any> {
-  const api = 'https://open.er-api.com/v6/latest/SGD';
+async function getConversionRatesForMYR(): Promise<any> {
+  const api = "https://open.er-api.com/v6/latest/MYR";
   const response = await fetch(api);
   return await response.json();
 }
 
-async function convertSGDtoMYR(sgd: string) {
-  const conversionRatesForSGD = await getConversionRatesForSGD();
-  const convertedAmount = Number(sgd) * conversionRatesForSGD.rates.MYR;
+async function convertMYRtoSGD(myr: string) {
+  const conversionRatesForMYR = await getConversionRatesForMYR();
+  const convertedAmount = Number(myr) * conversionRatesForMYR.rates.SGD;
   return convertedAmount.toFixed(2);
 }
 
@@ -33,7 +33,7 @@ export class ShopifyStore {
     this.accessToken = accessToken;
   }
 
-  static doesProductWebhookContainTag(  
+  static doesProductWebhookContainTag(
     webhookData: ProductCreateWebhook,
     tag: string
   ) {
@@ -49,14 +49,22 @@ export class ShopifyStore {
     return webhookData.variants[0].id;
   }
 
-  static getSkuNumberFromProductWebhook(
-    webhookData: ProductCreateWebhook
-  ) {
+  static getSkuNumberFromProductWebhook(webhookData: ProductCreateWebhook) {
     return webhookData.variants[0].sku;
   }
 
   async convertProductWebhookIntoProductInput(productData: ProductData) {
-    const { title, body_html, vendor, product_type, status, images, variants, productCost, id } = productData;
+    const {
+      title,
+      body_html,
+      vendor,
+      product_type,
+      status,
+      images,
+      variants,
+      productCost,
+      id,
+    } = productData;
 
     let productInput = {
       id: `gid://shopify/Product/${id}`, // this id exists for productUpdates
@@ -65,23 +73,28 @@ export class ShopifyStore {
       productType: product_type,
       vendor: vendor,
       status: "DRAFT",
-      tags: ["Ox Luxe's Product"],
-      images: images.map(function(img) {
-        return { src: img.src }
-       }),
-      variants: await Promise.all(variants.map(async function(variant) {
-        const price = await convertSGDtoMYR(variant.price);    
-        return {
-          price: price,
-          sku: variant.sku,
-          inventoryManagement: variant.inventory_management.toUpperCase(),
-          inventoryItem: { cost: await convertSGDtoMYR(increaseByTwentyPercent(productCost)), tracked: true },
-          inventoryQuantities: {
-            availableQuantity: variant.inventory_quantity,
-            locationId: `gid://shopify/Location/${process.env.GLAMPOT_STORE_LOCATION_ID}`,          
-          }
-        }
-      })),
+      tags: ["Glampot's Product"],
+      images: images.map(function (img) {
+        return { src: img.src };
+      }),
+      variants: await Promise.all(
+        variants.map(async function (variant) {
+          const price = await convertMYRtoSGD(variant.price);
+          return {
+            price: price,
+            sku: variant.sku,
+            inventoryManagement: variant.inventory_management.toUpperCase(),
+            inventoryItem: {
+              cost: await convertMYRtoSGD(increaseByTwentyPercent(productCost)),
+              tracked: true,
+            },
+            inventoryQuantities: {
+              availableQuantity: variant.inventory_quantity,
+              locationId: `gid://shopify/Location/${process.env.OXLUXE_STORE_LOCATION_ID}`,
+            },
+          };
+        })
+      ),
     };
     return productInput;
   }
@@ -98,9 +111,8 @@ export class ShopifyStore {
               }
           }
       }
-  }`
- 
-  
+  }`;
+
     try {
       const res = await client.query({
         data: {
@@ -135,9 +147,8 @@ export class ShopifyStore {
         },
       });
       // @ts-ignore
-      const correspondingGlampotProductId = res.body.data.productCreate.product.id.split("/").slice(-1)[0];
-      await OneToOneProductMapping.save(productData.id, correspondingGlampotProductId);
-
+      const correspondingOxluxeProductId = res.body.data.productCreate.product.id.split("/").slice(-1)[0];
+      await OneToOneProductMapping.save(productData.id, correspondingOxluxeProductId);
     } catch (error) {
       console.log(error);
     }
@@ -146,9 +157,8 @@ export class ShopifyStore {
     const client = new Shopify.Clients.Graphql(this.storeUrl, this.accessToken);
     const productAttributes = await this.convertProductWebhookIntoProductInput(productData);
 
-    // we want to update corresponding glampot product and not the origin product, hence updating the product id attribute. 
-    productAttributes.id = `gid://shopify/Product/${productData.correspondingGlampotProductId}`;
-    
+    productAttributes.id = `gid://shopify/Product/${productData.correspondingOxluxeProductId}`;
+
     try {
       const res = await client.query({
         data: {
@@ -165,17 +175,14 @@ export class ShopifyStore {
           },
         },
       });
-      
     } catch (error) {
-      console.log(error);     
+      console.log(error);
     }
   }
   async deleteProduct(productData: ProductData) {
     const client = new Shopify.Clients.Graphql(this.storeUrl, this.accessToken);
-    
-    // we want to delete the corresponding glampot product.
-    const correspondingGlampotProductId = `gid://shopify/Product/${productData.correspondingGlampotProductId}`;
-    
+    const correspondingOxluxeProductId = `gid://shopify/Product/${productData.correspondingOxluxeProductId}`;
+
     try {
       const res = await client.query({
         data: {
@@ -193,18 +200,17 @@ export class ShopifyStore {
           }`,
           variables: {
             input: {
-              id: correspondingGlampotProductId
-            }
+              id: correspondingOxluxeProductId,
+            },
           },
         },
       });
-      
+
       // @ts-ignore
-      console.log("Corresponding Product id: "+productData.correspondingGlampotProductId + " deleted from "+ res.body.data.productDelete.shop.name);
+      console.log("Corresponding Product id: " + productData.correspondingOxluxeProductId + " deleted from " + res.body.data.productDelete.shop.name);
       await OneToOneProductMapping.delete(productData.id);
-      
     } catch (error) {
-      console.log(error);   
+      console.log(error);
     }
   }
   async findProductIdBySku(skuNumber: string) {
@@ -223,8 +229,8 @@ export class ShopifyStore {
           }
         }
       }
-    }`
- 
+    }`;
+
     try {
       const res = await client.query({
         data: {
@@ -233,7 +239,7 @@ export class ShopifyStore {
       });
       // @ts-ignore
       const productId: string = res.body.data.productVariants.edges[0]?.node.product.id;
-      
+
       return productId;
     } catch (error) {
       console.log(error);
