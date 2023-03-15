@@ -12,6 +12,9 @@ export async function verifyWebhookType(
     let productWebhook = res.locals.productWebhook;
 
     const oneToOneProductMapping = await OneToOneProductMapping.find(productWebhook.id);
+    console.log("one to one product mapping: ");
+    console.log(oneToOneProductMapping);
+    
     const hasOxluxeTag = ShopifyStore.doesProductWebhookContainTag(
       productWebhook,
       "Oxluxe"
