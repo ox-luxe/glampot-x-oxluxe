@@ -152,7 +152,7 @@ export class ShopifyStore {
         },
       });
       // @ts-ignore
-      print(res.body);
+      console.log(res.body);
       // @ts-ignore
       const correspondingOxluxeProductId = res.body.data.productCreate.product.id.split("/").slice(-1)[0];
       console.log(`Corresponding Oxluxe product Id: ${correspondingOxluxeProductId}`);
