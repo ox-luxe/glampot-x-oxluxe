@@ -22,7 +22,7 @@ export class OneToOneProductMapping {
 
   static async find(productId: string) {
     try {
-      let sql = `select * from one_to_one_product_mapping where glampot_product_id=${productId};`;
+      let sql = `select * from one_to_one_product_mapping2 where glampot_product_id=${productId};`;
       let result = await db.execute(sql);
       // @ts-ignore
       return result[0].length > 0 ? result[0][0] : undefined;
