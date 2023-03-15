@@ -136,6 +136,8 @@ export class ShopifyStore {
     const client = new Shopify.Clients.Graphql(this.storeUrl, this.accessToken);
     const productAttributes = await this.convertProductWebhookIntoProductInput(productData);
     console.log(productAttributes);
+    console.log(`inventory item: ${productAttributes.variants[0].inventoryItem}`);
+    console.log(`inventory item: ${productAttributes.variants[0].inventoryQuantities}`);
     
 
     try {
