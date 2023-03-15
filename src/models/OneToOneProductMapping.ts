@@ -7,7 +7,7 @@ export class OneToOneProductMapping {
   static async save(glampotProductId: number, oxluxeProductId: string) {
     try {
         let sql =  `INSERT INTO 
-        \`glampot_integration\`.\`one_to_one_product_mapping\` 
+        \`glampot_integration\`.\`one_to_one_product_mapping2\` 
           (\`oxluxe_product_id\`, \`glampot_product_id\`) 
         VALUES 
           ('${oxluxeProductId}', '${glampotProductId}');`;
@@ -34,7 +34,7 @@ export class OneToOneProductMapping {
 
   static async delete(oxluxeProductId: string) {
     try {
-      let sql = `delete from one_to_one_product_mapping where oxluxe_product_id=${oxluxeProductId};`;
+      let sql = `delete from one_to_one_product_mapping2 where oxluxe_product_id=${oxluxeProductId};`;
       console.log("sql statement:"+sql);
       
       let result = await db.execute(sql);
