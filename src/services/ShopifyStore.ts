@@ -132,6 +132,8 @@ export class ShopifyStore {
   async createProduct(productData: ProductData) {
     const client = new Shopify.Clients.Graphql(this.storeUrl, this.accessToken);
     const productAttributes = await this.convertProductWebhookIntoProductInput(productData);
+    console.log(productAttributes);
+    
 
     try {
       const res = await client.query({
@@ -150,7 +152,11 @@ export class ShopifyStore {
         },
       });
       // @ts-ignore
+      print(res.body);
+      // @ts-ignore
       const correspondingOxluxeProductId = res.body.data.productCreate.product.id.split("/").slice(-1)[0];
+      console.log(`Corresponding Oxluxe product Id: ${correspondingOxluxeProductId}`);
+      
       await OneToOneProductMapping.save(productData.id, correspondingOxluxeProductId);
     } catch (error) {
       console.log(error);
