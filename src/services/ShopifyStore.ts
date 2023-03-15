@@ -130,12 +130,6 @@ export class ShopifyStore {
   async createProduct(productData: ProductData) {
     const client = new Shopify.Clients.Graphql(this.storeUrl, this.accessToken);
     const productAttributes = await this.convertProductWebhookIntoProductInput(productData);
-    console.log(`productAttributes from function: create Product`);
-    console.log(productAttributes);
-
-    console.log(`inventory item: ${JSON.stringify(productAttributes.variants[0].inventoryItem)}`);
-    console.log(`inventory quantities: ${JSON.stringify(productAttributes.variants[0].inventoryQuantities)}`);
-    
 
     try {
       const res = await client.query({
