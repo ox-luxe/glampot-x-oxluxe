@@ -210,7 +210,7 @@ export class ShopifyStore {
     
       // @ts-ignore
       console.log("Corresponding Product id: " + productData.correspondingOxluxeProductId + " deleted from " + res.body.data.productDelete.shop.name);
-      await OneToOneProductMapping.delete(productData.id);
+      await OneToOneProductMapping.delete(productData.correspondingOxluxeProductId!);
     } catch (error) {
       console.log(error);
     }

@@ -30,7 +30,7 @@ export class OneToOneProductMapping {
     }
   }
 
-  static async delete(oxluxeProductId: number) {
+  static async delete(oxluxeProductId: string) {
     try {
       let sql = `delete from one_to_one_product_mapping where oxluxe_product_id=${oxluxeProductId};`;
       console.log(sql);
