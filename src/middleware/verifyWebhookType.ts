@@ -16,7 +16,8 @@ export async function verifyWebhookType(
       productWebhook,
       "Oxluxe"
     );
-
+    console.log(`product webhook info from function: verifyWebhookType`);
+    console.log(productWebhook);
     console.log(`Oxluxe:Glampot product id mapping:`);
     console.log(`${oneToOneProductMapping}`);
     console.log(`Product/update webhook contains Oxluxe tag: ${hasOxluxeTag}`);

@@ -66,6 +66,9 @@ export class ShopifyStore {
       id,
     } = productData;
 
+    console.log(`display variant info in function: convertProductWebhookIntoProductInput`);
+    console.log(variants);
+    
     let productInput = {
       id: `gid://shopify/Product/${id}`, // this id exists for productUpdates
       title: title,
