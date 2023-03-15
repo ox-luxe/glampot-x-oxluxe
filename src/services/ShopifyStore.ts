@@ -119,6 +119,9 @@ export class ShopifyStore {
           query: QUERY_STRING,
         },
       });
+      console.log(`find cost of product graphQL response: `);
+      console.log(res.body);
+      
       // @ts-ignore
       const cost: string = res.body.data.productVariant.inventoryItem.unitCost.amount;
       return cost;
