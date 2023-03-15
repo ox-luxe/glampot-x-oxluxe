@@ -65,9 +65,6 @@ export class ShopifyStore {
       productCost,
       id,
     } = productData;
-
-    console.log(`display variant info in function: convertProductWebhookIntoProductInput`);
-    console.log(variants);
     
     let productInput = {
       id: `gid://shopify/Product/${id}`, // this id exists for productUpdates
@@ -122,8 +119,6 @@ export class ShopifyStore {
           query: QUERY_STRING,
         },
       });
-      console.log(`find cost of product graphQL response: `);
-      console.log(res.body);
       
       // @ts-ignore
       const cost: string = res.body.data.productVariant.inventoryItem.unitCost.amount;
@@ -135,7 +130,9 @@ export class ShopifyStore {
   async createProduct(productData: ProductData) {
     const client = new Shopify.Clients.Graphql(this.storeUrl, this.accessToken);
     const productAttributes = await this.convertProductWebhookIntoProductInput(productData);
+    console.log(`productAttributes from function: create Product`);
     console.log(productAttributes);
+
     console.log(`inventory item: ${JSON.stringify(productAttributes.variants[0].inventoryItem)}`);
     console.log(`inventory quantities: ${JSON.stringify(productAttributes.variants[0].inventoryQuantities)}`);
     
@@ -157,11 +154,7 @@ export class ShopifyStore {
         },
       });
       // @ts-ignore
-      console.log(res.body);
-      // @ts-ignore
       const correspondingOxluxeProductId = res.body.data.productCreate.product.id.split("/").slice(-1)[0];
-      console.log(`Corresponding Oxluxe product Id: ${correspondingOxluxeProductId}`);
-      
       await OneToOneProductMapping.save(productData.id, correspondingOxluxeProductId);
     } catch (error) {
       console.log(error);
