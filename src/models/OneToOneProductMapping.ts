@@ -33,6 +33,7 @@ export class OneToOneProductMapping {
   static async delete(oxluxeProductId: number) {
     try {
       let sql = `delete from one_to_one_product_mapping where oxluxe_product_id=${oxluxeProductId};`;
+      console.log(sql);
       let result = await db.execute(sql);
       console.log(result);  
       return result;
