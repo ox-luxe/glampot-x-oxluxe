@@ -183,6 +183,8 @@ export class ShopifyStore {
   async deleteProduct(productData: ProductData) {
     const client = new Shopify.Clients.Graphql(this.storeUrl, this.accessToken);
     const correspondingOxluxeProductId = `gid://shopify/Product/${productData.correspondingOxluxeProductId}`;
+    console.log(` oxluxe product id from Shopify Store deleteProduct method: ${correspondingOxluxeProductId}`);
+    
 
     try {
       const res = await client.query({
