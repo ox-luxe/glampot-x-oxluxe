@@ -23,6 +23,7 @@ function productRoute() {
     );
 
   router.route("/delete").post(async (req, res) => {
+    console.log("product delete endpoint reached");
     let productWebhook = res.locals.productWebhook;
 
     const oxluxeShopifyStore = new ShopifyStore(
@@ -33,6 +34,9 @@ function productRoute() {
     const uniqueProductMapping = await OneToOneProductMapping.find(
       productWebhook.id
     );
+
+    console.log(uniqueProductMapping);
+      
 
     if (uniqueProductMapping) {
       await oxluxeShopifyStore.deleteProduct({

@@ -207,6 +207,9 @@ export class ShopifyStore {
         },
       });
       // @ts-ignore
+      console.log(res.body.data);
+      
+      // @ts-ignore
       console.log("Corresponding Product id: " + productData.correspondingOxluxeProductId + " deleted from " + res.body.data.productDelete.shop.name);
       await OneToOneProductMapping.delete(productData.correspondingOxluxeProductId!);
     } catch (error) {
