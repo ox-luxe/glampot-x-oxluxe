@@ -11,7 +11,9 @@ export class OneToOneProductMapping {
           (\`oxluxe_product_id\`, \`glampot_product_id\`) 
         VALUES 
           ('${oxluxeProductId}', '${glampotProductId}');`;
+        console.log(sql);
         let result = await db.execute(sql);
+        console.log(result);
         
     } catch (error) {
       console.log(error);
@@ -33,9 +35,7 @@ export class OneToOneProductMapping {
   static async delete(oxluxeProductId: string) {
     try {
       let sql = `delete from one_to_one_product_mapping where oxluxe_product_id=${oxluxeProductId};`;
-      console.log(sql);
       let result = await db.execute(sql);
-      console.log(result);  
       return result;
       
     } catch (error) {

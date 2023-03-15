@@ -11,8 +11,6 @@ export async function verifyWebhookType(
     // res.locals.productWebhook came from previous middleware: extractProductWebhookForFurtherProcessing
     let productWebhook = res.locals.productWebhook;
 
-    console.log(productWebhook);
-
     const oneToOneProductMapping = await OneToOneProductMapping.find(productWebhook.id);
     const hasOxluxeTag = ShopifyStore.doesProductWebhookContainTag(
       productWebhook,
