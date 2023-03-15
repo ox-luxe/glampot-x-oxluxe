@@ -37,7 +37,7 @@ function productRoute() {
     if (uniqueProductMapping) {
       await oxluxeShopifyStore.deleteProduct({
         ...productWebhook,
-        correspondingOxluxeProductId: uniqueProductMapping.glampot_product_id,
+        correspondingOxluxeProductId: uniqueProductMapping.oxluxe_product_id,
       });
     }
     res.status(204).send();

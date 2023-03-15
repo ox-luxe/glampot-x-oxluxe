@@ -12,7 +12,6 @@ export class OneToOneProductMapping {
         VALUES 
           ('${oxluxeProductId}', '${glampotProductId}');`;
         let result = await db.execute(sql);
-        console.log(result);
         
     } catch (error) {
       console.log(error);

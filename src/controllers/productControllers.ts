@@ -84,7 +84,6 @@ async function deleteProduct(req: Request, res: Response, next: NextFunction) {
     );
 
     const correspondingOxluxeProductId = res.locals.oneToOneProductMapping.oxluxe_product_id;
-    console.log(`oxluxe product id from deleteProduct function: ${correspondingOxluxeProductId}`);
     
     await oxluxeShopifyStore.deleteProduct({
       ...productWebhook,

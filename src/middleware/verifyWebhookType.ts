@@ -33,8 +33,6 @@ export async function verifyWebhookType(
     if (!oneToOneProductMapping && !hasOxluxeTag) {
       res.status(204).send();
     }
-    console.log(res.locals.oneToOneProductMapping);
-    console.log(res.locals.productWebhookType);
 
     next();
   } catch (error) {
