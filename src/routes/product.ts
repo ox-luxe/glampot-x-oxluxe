@@ -9,8 +9,8 @@ const router = express.Router();
 
 function productRoute() {
   router.use(
-    extractProductWebhookForFurtherProcessing, // ends here if product is not tagged with "Glampot"
-    verifyPubsubMessage // ends here if webhook does not have expected shape
+    extractProductWebhookForFurtherProcessing, 
+    verifyPubsubMessage
   );
 
   router
